@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const mongoURI = "mongodb://127.0.0.1:27017/collaby";
+const mongoURI = `mongodb+srv://shlokshah321:3VRqzshMSBeDmbeW@collaby.xxbr8.mongodb.net/?retryWrites=true&w=majority&appName=Collaby`;
 
 async function connectDB() {
 	try {
