@@ -6,6 +6,7 @@ import { addUser, getUser, deleteUser, getUsers } from "./users.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import Room from "./Model/RoomSchema.js";
+import { ObjectId } from "mongodb";
 
 const app = express();
 const http = createServer(app);
@@ -25,10 +26,7 @@ io.on("connection", (socket) => {
 		socket
 			.in(room)
 			.emit("notification", { title: "Someone's here", description: `${user.name} just entered the room` });
-		console.log("times");
 		io.in(room).emit("users", await getUsers(room));
-
-		console.log("<Query Execution>");
 		try {
 			let roomData = await Room.findOne({ room });
 			if (!roomData) {
@@ -47,7 +45,6 @@ io.on("connection", (socket) => {
 			}
 
 			const existingDocumentState = roomData.content;
-			// waiting for client side needs fix
 			setTimeout(() => {
 				socket.emit("initialize-document", existingDocumentState);
 			}, 1000);
@@ -59,10 +56,41 @@ io.on("connection", (socket) => {
 		}
 	});
 
+	socket.on("initialize-tasks", async ({ room }) => {
+		try {
+			const current_room = await Room.findOne({ room });
+			setTimeout(() => {
+				socket.emit("initialize-tasks", current_room.tasks);
+			}, 1000);
+		} catch (error) {
+			console.log(error);
+		}
+	});
+
+	socket.on("new-task", async ({ room, description, assigned }) => {
+		try {
+			let task = { description, assigned };
+			task._id = new ObjectId();
+			await Room.findOneAndUpdate({ room }, { $push: { tasks: task } });
+			io.in(room).emit("new-task", task);
+		} catch (error) {
+			console.log(error);
+		}
+	});
+
+	socket.on("complete-task", async ({ room, _id }) => {
+		try {
+			const objectId = new mongoose.mongo.ObjectId(_id);
+			await Room.findOneAndUpdate({ room }, { $pull: { tasks: { _id: objectId } } });
+			io.in(room).emit("complete-task", { _id });
+		} catch (error) {
+			console.log(error);
+		}
+	});
+
 	socket.on("text-change", async ({ delta, room, username }) => {
 		try {
 			await Room.findOneAndUpdate({ room }, { content: delta }, { upsert: true, new: true });
-			console.log("document updated");
 			socket.to(room).emit("text-change", { delta, username });
 		} catch (err) {
 			console.error("Error updating document state:", err);
@@ -71,12 +99,7 @@ io.on("connection", (socket) => {
 
 	socket.on("save-document", async ({ room, content }) => {
 		try {
-			// Update the document's content in the room with the provided content
-			await Room.findOneAndUpdate(
-				{ room: room }, // Find the room by roomId
-				{ content: content }, // Update content with the saved content
-				{ new: true } // Return the updated document
-			);
+			await Room.findOneAndUpdate({ room: room }, { content: content }, { new: true });
 		} catch (err) {
 			console.error("Error saving document:", err);
 		}

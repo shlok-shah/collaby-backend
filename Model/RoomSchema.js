@@ -16,6 +16,10 @@ const RoomSchema = new mongoose.Schema(
 			type: [String], // Array of usernames in the room
 			default: [], // Initialize with an empty array
 		},
+		tasks: {
+			type: [Object],
+			default: [],
+		},
 	},
 	{ timestamps: true }
 ); // Automatically adds createdAt and updatedAt fields
