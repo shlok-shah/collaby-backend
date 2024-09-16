@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import "dotenv/config";
 
-const mongoURI = `mongodb+srv://shlokshah321:3VRqzshMSBeDmbeW@collaby.xxbr8.mongodb.net/?retryWrites=true&w=majority&appName=Collaby`;
+const mongoURI = process.env.NODE_ENV === "development" ? "mongodb://localhost:27017/collaby" : process.env.MONGO_URL;
 
 async function connectDB() {
 	try {
