@@ -47,3 +47,7 @@ This project was solely developed by me (Shlok), responsible for:
 ## Deployed at
 
 The fully functional website is deployed at https://collaby-frontend.vercel.app/
+
+## Video Walkthrough
+
+https://drive.google.com/file/d/1T0s6EndDgDNh92VgS0AXYa-yR5WB2KUc/view
