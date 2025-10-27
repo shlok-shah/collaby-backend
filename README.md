@@ -48,7 +48,7 @@ This project was solely developed by me (Shlok), responsible for:
 
 The fully functional website is deployed at https://collaby-frontend.vercel.app/
 
-### Due to inactivity it is possible that the deployed version does not work, as backend serverless providers tend to shut down instances which do not get requests for many days. It may take over 1 minute for the backend to restart incase of inactivity (Latest functionality check: 27 Oct 2025).
+**Due to inactivity it is possible that the deployed version does not work, as backend serverless providers tend to shut down instances which do not get requests for many days. It may take over 1 minute for the backend to restart incase of inactivity (Latest functionality check: 27 Oct 2025).**
 
 ## Video Walkthrough
 
